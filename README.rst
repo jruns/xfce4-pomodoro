@@ -18,7 +18,7 @@ cycles_between_long_breaks - How many cycles should we do before long break
 
 notify_time - Time for notifcation to hang (in seconds)
 
-The icons are stolen form http://www.flickr.com/photos/bcolbow/3842129453/
+The icons are from https://github.com/mozilla/fxemoji
 
 Instructions for XUbuntu (and probably other XFCE from the family)
 ------------------------------------------------------------------
