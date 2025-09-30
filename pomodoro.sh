@@ -32,7 +32,7 @@ function xnotify () {
 }
 
 function terminate_pomodoro () {
-	xnotify "$killmsg"
+	#xnotify "$killmsg"
 	echo "" > "$savedtime"
 	echo "idle" > "$savedmode"
 	echo "" > "$savedcyclecount"
@@ -75,7 +75,7 @@ current_time=$( date +%s )
 
 if [ "$1" == "-n" ] ; then
 	if [ "$mode" == "idle" ] ; then
-		xnotify "$startmsg"
+		#xnotify "$startmsg"
 		echo $current_time > "$savedtime"
 		echo "pomodoro" > "$savedmode"
 		echo "0" > "$savedcyclecount"
@@ -151,7 +151,7 @@ else
 			fi
 
 			aplay "$DIR/cow.wav"
-			xnotify "$msg"
+			#xnotify "$msg"
 			zenity --info --text="$msg"
 			echo "$current_time" > "$savedtime"
 
