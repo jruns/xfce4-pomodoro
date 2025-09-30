@@ -22,9 +22,10 @@ short_break_cycle=$(( short_break_time * 60 ))
 long_break_cycle=$(( long_break_time * 60 ))
 notify_time=$(( notify_time * 1000 ))
 summary="Pomodoro"
-startmsg="Pomodoro started, you have $pomodoro_time minutes left"
-endmsg_shortbreak="Pomodoro ended, stop the work and take short break"
-endmsg_longbreak="Pomodoro ended, stop the work and take long break"
+okbutton="Start Pomodoro"
+startmsg="Pomodoro starting, work for $pomodoro_time minutes"
+endmsg_shortbreak="Stop working and take a short $short_break_time minute break"
+endmsg_longbreak="Stop working and take a long $long_break_time minute break"
 killmsg="Pomodoro stopped, restart when you are ready"
 
 function xnotify () {
@@ -32,7 +33,7 @@ function xnotify () {
 }
 
 function terminate_pomodoro () {
-	xnotify "$killmsg"
+	#xnotify "$killmsg"
 	echo "" > "$savedtime"
 	echo "idle" > "$savedmode"
 	echo "" > "$savedcyclecount"
@@ -57,7 +58,7 @@ function render_status () {
 	# but user can intuitively and immidiatelly notice the difference,
 	# because if it is break remaining time is displayed.
 	remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
-	echo "<click>$DIR/pomodoro.sh -n</click>"
+	echo "<click>\"$DIR/pomodoro.sh\" -n</click>"
 	echo "<txt>$remaining_time_display</txt>"
 	echo "<img>$DIR/icons/$display_icon$size.png</img>"
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
@@ -75,7 +76,7 @@ current_time=$( date +%s )
 
 if [ "$1" == "-n" ] ; then
 	if [ "$mode" == "idle" ] ; then
-		xnotify "$startmsg"
+		#xnotify "$startmsg"
 		echo $current_time > "$savedtime"
 		echo "pomodoro" > "$savedmode"
 		echo "0" > "$savedcyclecount"
@@ -87,9 +88,13 @@ else
 	# periodic check, and redrawing
 
 	if [ $mode == "idle" ] ; then
-		echo "<click>$DIR/pomodoro.sh -n</click>"
+		echo "<click>\"$DIR/pomodoro.sh\" -n</click>"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
+
+	elif [ $mode == "paused" ] ; then
+		echo "<img>$DIR/icons/stopped$size.png</img>"
+		echo "<tool>Pomodoro Paused</tool>"
 
 	else
 		# timer running
@@ -128,6 +133,7 @@ else
 				exit 1
 			fi
 
+			new_mode="pomodoro"
 			if [ $mode == "pomodoro" ] ; then
 				cycle_count=$(($saved_cycle_count + 1))
 				cycle_mod=$(($cycle_count % $cycles_between_long_breaks))
@@ -139,21 +145,29 @@ else
 				  msg=$endmsg_longbreak
 					new_remaining_time=$long_break_cycle
 				fi
-				echo "$new_mode" > $savedmode
-				echo "$cycle_count" > $savedcyclecount
+				okbutton="Start Break"
+				echo "$cycle_count" > "$savedcyclecount"
 				render_status $new_mode $new_remaining_time $cycle_count
 
 			else
-				echo "pomodoro" > $savedmode
 				msg=$startmsg
 				render_status "pomodoro" $pomodoro_cycle $saved_cycle_count
 
 			fi
 
 			aplay "$DIR/cow.wav"
-			xnotify "$msg"
-			zenity --info --text="$msg"
-			echo "$current_time" > "$savedtime"
+			#xnotify "$msg"
+			echo "paused" > "$savedmode"
+			breakDialog=$(zenity --info --window-icon="$DIR/icons/running.png" --title="$summary" --text="$msg" --ok-label="$okbutton")
+			returnCode=$?
+
+			if [ $returnCode = "0" ]; then
+				current_time=$( date +%s )
+				echo "$new_mode" > "$savedmode"
+				echo "$current_time" > "$savedtime"
+			elif [ $returnCode = "1" ]; then
+				terminate_pomodoro
+			fi
 
 		else
 			render_status $mode $remaining_time $saved_cycle_count
