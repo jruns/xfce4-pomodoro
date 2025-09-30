@@ -146,7 +146,7 @@ else
 					new_remaining_time=$long_break_cycle
 				fi
 				okbutton="Start Break"
-				echo "$cycle_count" > $savedcyclecount
+				echo "$cycle_count" > "$savedcyclecount"
 				render_status $new_mode $new_remaining_time $cycle_count
 
 			else
