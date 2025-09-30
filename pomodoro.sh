@@ -23,9 +23,9 @@ long_break_cycle=$(( long_break_time * 60 ))
 notify_time=$(( notify_time * 1000 ))
 summary="Pomodoro"
 okbutton="Start Pomodoro"
-startmsg="Pomodoro started, you have $pomodoro_time minutes left"
-endmsg_shortbreak="Pomodoro ended, stop the work and take short break"
-endmsg_longbreak="Pomodoro ended, stop the work and take long break"
+startmsg="Pomodoro starting, work for $pomodoro_time minutes"
+endmsg_shortbreak="Stop working and take a short $short_break_time minute break"
+endmsg_longbreak="Stop working and take a long $long_break_time minute break"
 killmsg="Pomodoro stopped, restart when you are ready"
 
 function xnotify () {
