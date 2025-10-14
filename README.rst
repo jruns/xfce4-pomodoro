@@ -22,9 +22,9 @@ Instructions for the Xfce Desktop Environment:
 
 Available Command Line arguments:
 ------------------------------------------------------------------
-  
-| Option | Description |
-| --- | --- |
++------------+-----------------------+
+| Option     |           Description |
++============+=======================+
 | -n, --click                | start or stop the timer |
 | --pomodoro <minutes>       | minutes for the pomodoro cycle (default: 25) |
 | --short-break <minutes>    | minutes for the short break cycle (default: 5) |
@@ -33,3 +33,4 @@ Available Command Line arguments:
 | --disable-sound            | disable the sound notification when a pomodoro cycle completes |
 | --icon-size <number>       | change the size of the toolbar icon (default: 24, available: 16, 24, 32) |
 | -h, --help                 | display the help |
++----------------------------+--------------------+
