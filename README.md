@@ -6,17 +6,17 @@ After xfce4-genmon-plugin is added to the panel it should be configured to point
 The icons are from https://github.com/mozilla/fxemoji
 
 ## Instructions for the Xfce Desktop Environment:
-#. Download pomodoro.sh or clone repository
-#. Install xfce4-genmon-plugin: `# apt-get install xfce4-genmon-plugin`
-#. Right click on your XFCE panel, go to **Panel** => **Add New Items...**
-#. Search for **Generic Monitor**, and select it
-#. Right click on newly added monitor in panel, and select **Properties**
-#. In new window enter path to `pomodoro.sh` in *Command* field. Pass optional arguments here.
-#. Uncheck *Label*
-#. Set a period of `1` seconds. This is the refresh/recheck period.
-#. Set font large enough to see remaining time clearly.
-#. Click on your new panel item to start the timer.
-#. Stop procrastinating and start working :)
+1. Download pomodoro.sh or clone repository
+1. Install xfce4-genmon-plugin: `# apt-get install xfce4-genmon-plugin`
+1. Right click on your XFCE panel, go to **Panel** => **Add New Items...**
+1. Search for **Generic Monitor**, and select it
+1. Right click on newly added monitor in panel, and select **Properties**
+1. In new window enter path to `pomodoro.sh` in *Command* field. Pass optional arguments here.
+1. Uncheck *Label*
+1. Set a period of `1` seconds. This is the refresh/recheck period.
+1. Set font large enough to see remaining time clearly.
+1. Click on your new panel item to start the timer.
+1. Stop procrastinating and start working :)
 
 ## Available Command Line arguments:
 | Option                     | Description                       |
