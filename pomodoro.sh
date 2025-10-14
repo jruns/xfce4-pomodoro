@@ -9,7 +9,7 @@ function usage() {
     cat <<USAGE
 
 Usage:
- $0 [-n|--click] [--pomodoro value] [--short-break value] [--long-break value] [--cycles value] [--disable-sound]
+ $0 [options]
 
 Options:
  -n, --click               starts or stops the timer
@@ -18,6 +18,7 @@ Options:
  --long-break <minutes>    minutes for the long break cycle (default: 15)
  --cycles <number>         number of pomodoro cycles before long break (default: 4)
  --disable-sound           disables the sound notification when a pomodoro cycle completes
+ --icon-size <number>      change the size of the toolbar icon (default: 24, available: 16, 24, 32)
 USAGE
     exit 1
 }
@@ -76,6 +77,7 @@ while [[ $# -gt 0 ]] ; do
 		--long-break) long_break_time="${2:-$long_break_time}" ;;
 		--cycles) cycles_between_long_breaks="${2:-$cycles_between_long_breaks}" ;;
 		--disable-sound) sound="no" ;;
+		--icon-size) size="${2:-$size}" ;;
     	-h | --help) usage ;;
   	esac
 	shift
