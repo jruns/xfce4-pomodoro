@@ -9,8 +9,19 @@ short_break_time=5	# Time for the short break cycle (in minutes)
 long_break_time=15	# Time for the long break cycle (in minutes)
 cycles_between_long_breaks=4 # How many cycles should we do before long break
 notify_time=5	# Time for notification to hang (in seconds)
+click="no"
+sound="on"
 
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+while [[ $# -gt 0 ]] ; do
+	opt="$1"
+	case $opt in
+		-n|--click) click="yes" ;;
+		--disable-sound) sound="no" ;;
+  	esac
+	shift
+done
 
 savedtime="$DIR/savedtime"
 savedmode="$DIR/savedmode"
@@ -58,7 +69,7 @@ function render_status () {
 	# but user can intuitively and immidiatelly notice the difference,
 	# because if it is break remaining time is displayed.
 	remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
-	echo "<click>\"$DIR/pomodoro.sh\" -n</click>"
+	echo "<click>\"$DIR/pomodoro.sh\" --click</click>"
 	echo "<txt>$remaining_time_display</txt>"
 	echo "<img>$DIR/icons/$display_icon$size.png</img>"
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
@@ -74,7 +85,7 @@ fi
 
 current_time=$( date +%s )
 
-if [ "$1" == "-n" ] ; then
+if [ "$click" == "yes" ] ; then
 	if [ "$mode" == "idle" ] ; then
 		#xnotify "$startmsg"
 		echo $current_time > "$savedtime"
@@ -88,7 +99,7 @@ else
 	# periodic check, and redrawing
 
 	if [ $mode == "idle" ] ; then
-		echo "<click>\"$DIR/pomodoro.sh\" -n</click>"
+		echo "<click>\"$DIR/pomodoro.sh\" --click</click>"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
 
@@ -155,7 +166,10 @@ else
 
 			fi
 
-			aplay "$DIR/cow.wav"
+			if [ "$sound" == "on" ] ; then
+				aplay "$DIR/cow.wav"
+			fi
+			
 			#xnotify "$msg"
 			echo "paused" > "$savedmode"
 			breakDialog=$(zenity --info --window-icon="$DIR/icons/running.png" --title="$summary" --text="$msg" --ok-label="$okbutton")
