@@ -23,6 +23,7 @@ Instructions for the Xfce Desktop Environment:
 Available Command Line arguments:
 ------------------------------------------------------------------
 | Option | Description |
+| --- | --- |
 | -n, --click                | start or stop the timer |
 | --pomodoro <minutes>       | minutes for the pomodoro cycle (default: 25) |
 | --short-break <minutes>    | minutes for the short break cycle (default: 5) |
