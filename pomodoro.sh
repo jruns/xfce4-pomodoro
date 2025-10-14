@@ -8,11 +8,16 @@ DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 function usage() {
     cat <<USAGE
 
-    Usage: $0 [--click] [--disable-sound]
+Usage:
+ $0 [-n|--click] [--pomodoro value] [--short-break value] [--long-break value] [--cycles value] [--disable-sound]
 
-    Options:
-        -n, --click:        starts or stops the timer
-        --disable-sound:    disables the sound notification when a pomodoro cycle completes
+Options:
+ -n, --click               starts or stops the timer
+ --pomodoro <minutes>      minutes for the pomodoro cycle (default: 25)
+ --short-break <minutes>   minutes for the short break cycle (default: 5)
+ --long-break <minutes>    minutes for the long break cycle (default: 15)
+ --cycles <number>         number of pomodoro cycles before long break (default: 4)
+ --disable-sound           disables the sound notification when a pomodoro cycle completes
 USAGE
     exit 1
 }
@@ -66,10 +71,12 @@ while [[ $# -gt 0 ]] ; do
 	opt="$1"
 	case $opt in
 		-n|--click) click="yes" ;;
+		--pomodoro) pomodoro_time="${2:-$pomodoro_time}" ;;
+		--short-break) short_break_time="${2:-$short_break_time}" ;;
+		--long-break) long_break_time="${2:-$long_break_time}" ;;
+		--cycles) cycles_between_long_breaks="${2:-$cycles_between_long_breaks}" ;;
 		--disable-sound) sound="no" ;;
-
     	-h | --help) usage ;;
-    	*) usage ; exit 1 ;;
   	esac
 	shift
 done
