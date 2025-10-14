@@ -5,7 +5,7 @@ After xfce4-genmon-plugin is added to the panel it should be configured to point
 
 The icons are from https://github.com/mozilla/fxemoji
 
-## Instructions for the Xfce Desktop Environment:
+## Installation Instructions:
 1. Download pomodoro.sh or clone repository
 1. Install xfce4-genmon-plugin: `# apt-get install xfce4-genmon-plugin`
 1. Right click on your XFCE panel, go to **Panel** => **Add New Items...**
