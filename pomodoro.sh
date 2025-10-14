@@ -3,30 +3,27 @@
 # This is a simple script for pomodoro timer.
 # This is intended to be used with xfce4-genmon-plugin.
 
-size=24		# Icon size in pixels
-pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
-short_break_time=5	# Time for the short break cycle (in minutes)
-long_break_time=15	# Time for the long break cycle (in minutes)
-cycles_between_long_breaks=4 # How many cycles should we do before long break
-notify_time=5	# Time for notification to hang (in seconds)
-
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-savedtime="$DIR/savedtime"
-savedmode="$DIR/savedmode"
-savedcyclecount="$DIR/savedcyclecount"
-lock="$DIR/lock"
+function usage() {
+    cat <<USAGE
 
-pomodoro_cycle=$(( pomodoro_time * 60 ))
-short_break_cycle=$(( short_break_time * 60 ))
-long_break_cycle=$(( long_break_time * 60 ))
-notify_time=$(( notify_time * 1000 ))
-summary="Pomodoro"
-okbutton="Start Pomodoro"
-startmsg="Pomodoro starting, work for $pomodoro_time minutes"
-endmsg_shortbreak="Stop working and take a short $short_break_time minute break"
-endmsg_longbreak="Stop working and take a long $long_break_time minute break"
-killmsg="Pomodoro stopped, restart when you are ready"
+Usage:
+ $0 [options]
+
+Options:
+ -n, --click               start or stop the timer
+ --pomodoro <minutes>      minutes for the pomodoro cycle (default: 25)
+ --short-break <minutes>   minutes for the short break cycle (default: 5)
+ --long-break <minutes>    minutes for the long break cycle (default: 15)
+ --cycles <number>         number of pomodoro cycles before long break (default: 4)
+ --disable-sound           disable the sound notification when a pomodoro cycle completes
+ --icon-size <number>      change the size of the toolbar icon (default: 24, available: 16, 24, 32)
+
+ -h, --help                display this help
+USAGE
+    exit 1
+}
 
 function xnotify () {
 	notify-send -t $notify_time -i "$DIR/icons/running.png" "$summary" "$1"
@@ -58,11 +55,51 @@ function render_status () {
 	# but user can intuitively and immidiatelly notice the difference,
 	# because if it is break remaining time is displayed.
 	remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
-	echo "<click>\"$DIR/pomodoro.sh\" -n</click>"
+	echo "<click>\"$DIR/pomodoro.sh\" --click</click>"
 	echo "<txt>$remaining_time_display</txt>"
 	echo "<img>$DIR/icons/$display_icon$size.png</img>"
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
 }
+
+size=24		# Icon size in pixels
+pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
+short_break_time=5	# Time for the short break cycle (in minutes)
+long_break_time=15	# Time for the long break cycle (in minutes)
+cycles_between_long_breaks=4 # How many cycles should we do before long break
+notify_time=5	# Time for notification to hang (in seconds)
+click="no"
+sound="on"
+
+while [[ $# -gt 0 ]] ; do
+	opt="$1"
+	case $opt in
+		-n|--click) click="yes" ;;
+		--pomodoro) pomodoro_time="${2:-$pomodoro_time}" ;;
+		--short-break) short_break_time="${2:-$short_break_time}" ;;
+		--long-break) long_break_time="${2:-$long_break_time}" ;;
+		--cycles) cycles_between_long_breaks="${2:-$cycles_between_long_breaks}" ;;
+		--disable-sound) sound="no" ;;
+		--icon-size) size="${2:-$size}" ;;
+    	-h | --help) usage ;;
+  	esac
+	shift
+done
+
+savedtime="$DIR/savedtime"
+savedmode="$DIR/savedmode"
+savedcyclecount="$DIR/savedcyclecount"
+lock="$DIR/lock"
+
+pomodoro_cycle=$(( pomodoro_time * 60 ))
+short_break_cycle=$(( short_break_time * 60 ))
+long_break_cycle=$(( long_break_time * 60 ))
+notify_time=$(( notify_time * 1000 ))
+summary="Pomodoro"
+okbutton="Start Pomodoro"
+startmsg="Pomodoro starting, work for $pomodoro_time minutes"
+endmsg_shortbreak="Stop working and take a short $short_break_time minute break"
+endmsg_longbreak="Stop working and take a long $long_break_time minute break"
+killmsg="Pomodoro stopped, restart when you are ready"
 
 ( flock -x 200
 
@@ -74,7 +111,7 @@ fi
 
 current_time=$( date +%s )
 
-if [ "$1" == "-n" ] ; then
+if [ "$click" == "yes" ] ; then
 	if [ "$mode" == "idle" ] ; then
 		#xnotify "$startmsg"
 		echo $current_time > "$savedtime"
@@ -88,7 +125,7 @@ else
 	# periodic check, and redrawing
 
 	if [ $mode == "idle" ] ; then
-		echo "<click>\"$DIR/pomodoro.sh\" -n</click>"
+		echo "<click>\"$DIR/pomodoro.sh\" --click</click>"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
 
@@ -155,7 +192,10 @@ else
 
 			fi
 
-			aplay "$DIR/cow.wav"
+			if [ "$sound" == "on" ] ; then
+				aplay "$DIR/cow.wav"
+			fi
+			
 			#xnotify "$msg"
 			echo "paused" > "$savedmode"
 			breakDialog=$(zenity --info --window-icon="$DIR/icons/running.png" --title="$summary" --text="$msg" --ok-label="$okbutton")
