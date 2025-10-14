@@ -1,7 +1,7 @@
 Pomodoro plugin for Xfce4 panel
 ===============================
 
-This bash script uses xfce4-genmon-plugin and libnotify to create a simple Pomodoro timer for Xfce4 panel.
+This bash script uses xfce4-genmon-plugin, zenity and libnotify to create a simple Pomodoro timer for Xfce4 panel.
 After xfce4-genmon-plugin is added to the panel - it should point to the pomodoro.sh script.  
 
 The icons are from https://github.com/mozilla/fxemoji
