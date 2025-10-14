@@ -12,13 +12,15 @@ Usage:
  $0 [options]
 
 Options:
- -n, --click               starts or stops the timer
+ -n, --click               start or stop the timer
  --pomodoro <minutes>      minutes for the pomodoro cycle (default: 25)
  --short-break <minutes>   minutes for the short break cycle (default: 5)
  --long-break <minutes>    minutes for the long break cycle (default: 15)
  --cycles <number>         number of pomodoro cycles before long break (default: 4)
- --disable-sound           disables the sound notification when a pomodoro cycle completes
+ --disable-sound           disable the sound notification when a pomodoro cycle completes
  --icon-size <number>      change the size of the toolbar icon (default: 24, available: 16, 24, 32)
+
+ -h, --help                display this help
 USAGE
     exit 1
 }
