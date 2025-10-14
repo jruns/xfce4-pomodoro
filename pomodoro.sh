@@ -3,41 +3,19 @@
 # This is a simple script for pomodoro timer.
 # This is intended to be used with xfce4-genmon-plugin.
 
-size=24		# Icon size in pixels
-pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
-short_break_time=5	# Time for the short break cycle (in minutes)
-long_break_time=15	# Time for the long break cycle (in minutes)
-cycles_between_long_breaks=4 # How many cycles should we do before long break
-notify_time=5	# Time for notification to hang (in seconds)
-click="no"
-sound="on"
-
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-while [[ $# -gt 0 ]] ; do
-	opt="$1"
-	case $opt in
-		-n|--click) click="yes" ;;
-		--disable-sound) sound="no" ;;
-  	esac
-	shift
-done
+function usage() {
+    cat <<USAGE
 
-savedtime="$DIR/savedtime"
-savedmode="$DIR/savedmode"
-savedcyclecount="$DIR/savedcyclecount"
-lock="$DIR/lock"
+    Usage: $0 [--click] [--disable-sound]
 
-pomodoro_cycle=$(( pomodoro_time * 60 ))
-short_break_cycle=$(( short_break_time * 60 ))
-long_break_cycle=$(( long_break_time * 60 ))
-notify_time=$(( notify_time * 1000 ))
-summary="Pomodoro"
-okbutton="Start Pomodoro"
-startmsg="Pomodoro starting, work for $pomodoro_time minutes"
-endmsg_shortbreak="Stop working and take a short $short_break_time minute break"
-endmsg_longbreak="Stop working and take a long $long_break_time minute break"
-killmsg="Pomodoro stopped, restart when you are ready"
+    Options:
+        -n, --click:        starts or stops the timer
+        --disable-sound:    disables the sound notification when a pomodoro cycle completes
+USAGE
+    exit 1
+}
 
 function xnotify () {
 	notify-send -t $notify_time -i "$DIR/icons/running.png" "$summary" "$1"
@@ -74,6 +52,43 @@ function render_status () {
 	echo "<img>$DIR/icons/$display_icon$size.png</img>"
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
 }
+
+size=24		# Icon size in pixels
+pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
+short_break_time=5	# Time for the short break cycle (in minutes)
+long_break_time=15	# Time for the long break cycle (in minutes)
+cycles_between_long_breaks=4 # How many cycles should we do before long break
+notify_time=5	# Time for notification to hang (in seconds)
+click="no"
+sound="on"
+
+while [[ $# -gt 0 ]] ; do
+	opt="$1"
+	case $opt in
+		-n|--click) click="yes" ;;
+		--disable-sound) sound="no" ;;
+
+    	-h | --help) usage ;;
+    	*) usage ; exit 1 ;;
+  	esac
+	shift
+done
+
+savedtime="$DIR/savedtime"
+savedmode="$DIR/savedmode"
+savedcyclecount="$DIR/savedcyclecount"
+lock="$DIR/lock"
+
+pomodoro_cycle=$(( pomodoro_time * 60 ))
+short_break_cycle=$(( short_break_time * 60 ))
+long_break_cycle=$(( long_break_time * 60 ))
+notify_time=$(( notify_time * 1000 ))
+summary="Pomodoro"
+okbutton="Start Pomodoro"
+startmsg="Pomodoro starting, work for $pomodoro_time minutes"
+endmsg_shortbreak="Stop working and take a short $short_break_time minute break"
+endmsg_longbreak="Stop working and take a long $long_break_time minute break"
+killmsg="Pomodoro stopped, restart when you are ready"
 
 ( flock -x 200
 
