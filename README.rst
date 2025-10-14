@@ -22,6 +22,7 @@ Instructions for the Xfce Desktop Environment:
 
 Available Command Line arguments:
 ------------------------------------------------------------------
+  
 | Option | Description |
 | --- | --- |
 | -n, --click                | start or stop the timer |
